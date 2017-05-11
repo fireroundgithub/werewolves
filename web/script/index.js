@@ -41,7 +41,7 @@ function startGame(url) {
         var identify = data.identify; // 每位玩家的身份
         console.log("您的身份是：" + identify);
         if(state === "start"){
-            var imgUrl = "./resource/card/identify"+identify+".jpg"; // 显示身份信息的图片
+            var imgUrl = "../img/card/identify"+identify+".jpg"; // 显示身份信息的图片
             $("#js-userIdentify").attr("style", "background: url('"+imgUrl+"');background-size: cover;");
             $("#js-userIdentify").html(identifyArray[identify]);// 图片上显示身份
             myIdentify = identify; // 用户身份
@@ -74,9 +74,9 @@ function showSeats(seatArr, mySeat) {
         var centerIndex = seatArr.length/2;
         var left = $("js-leftLogo");
         var right = $("js-rightLogo");
-        var img = "<img src='./resource/seats/"+i+".png' alt='用户'" + i + ">";
+        var img = "<img src='../img/seats/"+i+".png' alt='用户'" + i + ">";
         if(i === mySeat){
-            img = "<img src='./resource/seats/"+i+".png' class='mySeatImg' alt='我'>";
+            img = "<img src='../img/seats/"+i+".png' class='mySeatImg' alt='我'>";
         }
         if(i < centerIndex){
             left.append(img);
