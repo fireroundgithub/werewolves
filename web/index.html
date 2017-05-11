@@ -11,21 +11,33 @@
 <div class="prepareGame" id="js-prepareGame"> 游戏马上开始，目前在线人数：<span id="js-onlineNumber">1</span></div>
     <div class="containAll" id="js-containAll">
         <header>
-            <div  class="dayNum">第一天</div>
-            <time class="gameTime"><span id="js-minutes">0</span>分<span id="js-seconds">0</span>秒</time>
+            <div id="js-dayNum" class="dayNum">第一天</div>
+            <time id="js-gameTime" class="gameTime"><span id="js-minutes">0</span>分<span id="js-seconds">0</span>秒</time>
         </header>
-        <section class="container">
-            <nav class="leftLogo" id="js-leftLogo">
+        <section id="js-container" class="container">
+            <nav id="js-leftLogo" class="leftLogo">
+                <img src="./img/photo/wolf1.jpg">
+                <img src="./img/photo/wolf2.jpg">
+                <img src="./img/photo/wolf3.jpg">
+                <img src="./img/photo/wolf4.jpg">
+                <img src="./img/photo/wolf5.jpg">
+                <img src="./img/photo/wolf6.jpg">
             </nav>
-            <nav class="rightLogo" id="js-rightLogo">
+            <nav id="js-rightLogo" class="rightLogo">
+                <img src="./img/photo/wolf7.jpg">
+                <img src="./img/photo/wolf8.jpg">
+                <img src="./img/photo/wolf9.jpg">
+                <img src="./img/photo/wolf10.jpg">
+                <img src="./img/photo/wolf11.jpg">
+                <img src="./img/photo/wolf12.jpg">
             </nav>
-            <article class="userVideo"></article>
-            <footer class="content">
-                <div class="userList"></div>
-                <div class="historyText">
+            <article id="js-userVideo" class="userVideo"></article>
+            <footer id="js-content" class="content">
+                <div id="js-userList" class="userList"></div>
+                <div id="js-history" class="historyText">
                     <form class="sendNews">
-                        <div class="newsHistory"></div>
-                        <input class="inputNews"><button>发送</button>
+                        <div id="text" class="newsHistory"></div>
+                        <input id="news" class="inputNews"><button>发送</button>
                     </form>
                 </div>
                 <div id="js-userIdentify" class="userIdentify"></div>
@@ -34,9 +46,7 @@
         <footer class="designerNews">@design by wenC</footer>
     </div>
 
-<div class="messageDIV" id="js-message"><div class="message"></div></div>
 <script src="jquery-2.0.2.js"></script>
-<script src="tools.js"></script>
 <script src="index.js"></script>
 </body>
 </html>
