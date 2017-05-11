@@ -102,12 +102,21 @@
 /*用户信息识别展示*/
 .userIdentify{
     width: 16%;
-    height: 95%;
-    margin-top: -126px;
+    height: 124px;
+    margin-top: -124px;
     float: right;
     border: 1px solid;
     margin-right: 2px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 124px;
 }
+
+/*我的位置信息*/
+.mySeatImg{
+    border:2px solid #f00;
+}
+
 /*用户发送信息*/
 .sendNews{
     position: absolute;
@@ -137,4 +146,27 @@ button{
 .designerNews{
     text-align: center;
     color: #9E9E9E;
+}
+
+/*操作提示信息*/
+.messageDIV{
+    position: absolute;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(158, 158, 158, 0.4);
+    display: none;
+}
+.message{
+    position: absolute;
+    height: 1.5em;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5em;
+    left: 50%;
+    top: 50%;
+    width: 300px;
+    margin-left: -150px;
+    margin-top: -0.75em;
 }
