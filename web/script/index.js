@@ -17,10 +17,6 @@ $("#js-start").on("click", function (e) {
     $("#js-start").hide(); // 隐藏按钮
     $("#js-prepareGame").show(); // 跳转到等待页面
 
-    $("#js-prepareGame").hide(); // 跳转到等待页面
-    $("#js-containAll").show();// 显示container
-    timeOut(new Date()); // 开始计时
-
     startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
 });
 
