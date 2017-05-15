@@ -45,7 +45,7 @@ function startGame(url) {
             showMyIdentify(myIdentify);//显示当前用户信息
             showSeats(data.seatArr, data.mySeat); // 显示座位信息
             // 狼人，需要显示自己的狼队友
-            if(myIdentify === 0){ wolf(); }
+            if(data.wolf){ wolf(data.wolf); }
             // 游戏倒计时，由myIdentify保存当前用户身份
             showMessage(myIdentify);
         }
@@ -124,19 +124,12 @@ function showMessage(identify) {
 /**
  * 显示狼队友
  */
-function wolf() {
-    var wolf = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/getAllWolf/"+myIdentify);
-    $(wolf).on("message", function (msg) {
-        var wolfData = JSON.parse(msg.data); // 狼人位置
-        if(wolfData.msg === 1){ //安全着想
-            var wolfIndex = wolfData.wolf;
-            for(var j=0; j<wolfIndex.length; j++){
-                if(wolfIndex[j] < 6){
-                    $('#js-leftLogo>img:eq('+j+')').attr("src", "../img/card/identify0.jpg");
-                } else {
-                    $('#js-rightLogo>img:eq('+(j-6)+')').attr("src", "../img/card/identify0.jpg");
-                }
-            }
+function wolf(wolfIndex) {
+    for(var j=0; j<wolfIndex.length; j++){
+        if(wolfIndex[j] < 6){
+            $('#js-leftLogo>img:eq('+j+')').attr("src", "../img/card/identify0.jpg");
+        } else {
+            $('#js-rightLogo>img:eq('+(j-6)+')').attr("src", "../img/card/identify0.jpg");
         }
-    })
+    }
 }
