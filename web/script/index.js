@@ -18,7 +18,6 @@ $("#js-start").on("click", function (e) {
     $("#js-start").hide(); // 隐藏按钮
     $("#js-prepareGame").show(); // 跳转到等待页面
 
-
     startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
 });
 
@@ -36,18 +35,19 @@ function startGame(url) {
     .on("message", function (msg) {
         var data = JSON.parse(msg.data);
         var state = data.state; // 游戏人数是否凑齐===start
-        myIdentify = data.identify; // 每位玩家的身份
-        console.log("您的身份是：" + myIdentify);
         if(state === "start"){
+            myIdentify = data.identify; // 每位玩家的身份
+
             $("#js-prepareGame").hide(); // 跳转到等待页面
             $("#js-containAll").show();// 显示container
             timeOut(new Date()); // 开始计时
 
             showMyIdentify(myIdentify);//显示当前用户信息
             showSeats(data.seatArr, data.mySeat); // 显示座位信息
-
+            // 狼人，需要显示自己的狼队友
+            if(myIdentify === 0){ wolf(); }
             // 游戏倒计时，由myIdentify保存当前用户身份
-            showMessage();
+            showMessage(myIdentify);
         }
     })
     .on("close", function (e) {
@@ -101,16 +101,42 @@ function timeOut(nowTime) {
 /**
  * 展示提示信息
  */
-function showMessage() {
+function showMessage(identify) {
     var $dom = $("#js-message"); // 提示信息展示处
-    var textArr = ["开始,天黑请闭眼", "预言家请睁眼，请选择你要验谁的身份，点击该用户头像"];
+    var textArr = ["开始,天黑请闭眼", "狼人请睁眼", "预言家请睁眼", "女巫请睁眼", "守卫请睁眼", "猎人请睁眼"];
+    var ide = identify+1;
     $dom.show();
     // 每个操作相隔5s
     for(var i=0; i<textArr.length; i++){
         setTimeout((function (i) {
             return function () {
-                $dom.html(textArr[i]);
+                if(i === ide && identify !== 5){
+                    /**
+                     * todo 身份牌的操作
+                     */
+                } else {
+                    $dom.html(textArr[i]);
+                }
             }
         })(i), 5000*i);
     }
+}
+/**
+ * 显示狼队友
+ */
+function wolf() {
+    var wolf = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/getAllWolf/"+myIdentify);
+    $(wolf).on("message", function (msg) {
+        var wolfData = JSON.parse(msg.data); // 狼人位置
+        if(wolfData.msg === 1){ //安全着想
+            var wolfIndex = wolfData.wolf;
+            for(var j=0; j<wolfIndex.length; j++){
+                if(wolfIndex[j] < 6){
+                    $('#js-leftLogo>img:eq('+j+')').attr("src", "../img/card/identify0.jpg");
+                } else {
+                    $('#js-rightLogo>img:eq('+(j-6)+')').attr("src", "../img/card/identify0.jpg");
+                }
+            }
+        }
+    })
 }
