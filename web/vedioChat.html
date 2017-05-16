@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>视频聊天</title>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="bookmark" href="/favicon.ico"/>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.pubnub.com/pubnub-3.7.14.min.js"></script>
+    <script src="https://cdn.pubnub.com/webrtc/webrtc.js"></script>
+</head>
+<body>
+<div id="vid-box"></div>
+<form name="loginForm" id="login" action="#" onsubmit="return login(this);">
+    <input type="text" name="username" id="username" placeholder="输入你的昵称" />
+    <input type="submit" name="login_submit" value="登入" />
+</form>
+<form name="callForm" id="call" action="#" onsubmit="return makeCall(this);">
+    <input type="text" name="number" placeholder="输入对方的昵称"/>
+    <input type="submit" value="视频" />
+</form>
+<script type="text/javascript">
+    var video_out = document.getElementById("vid-box");
+
+    function login(form) {
+        var phone = window.phone = PHONE({
+            number: form.username.value || "Anonymous", // listen on username line else Anonymous
+            publish_key: 'pub-c-c30fc430-9ca3-4c27-9ff3-6d3a5d9e7e97',
+            subscribe_key: 'sub-c-3d954a2e-ded4-11e6-b2ae-0619f8945a4f',
+        });
+        phone.ready(function () { form.username.style.background = "#55ff5b"; });
+        phone.receive(function (session) {
+            session.connected(function (session) { video_out.appendChild(session.video); });
+            session.ended(function (session) { video_out.innerHTML = ''; });
+        });
+        return false; 	// So the form does not submit.
+    }
+
+    function makeCall(form) {
+        if (!window.phone) alert("Login First!");
+        else phone.dial(form.number.value);
+        return false;
+    }
+
+</script>
+</body>
+</html>

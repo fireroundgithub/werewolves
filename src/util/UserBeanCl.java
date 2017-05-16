@@ -61,8 +61,8 @@ public class UserBeanCl {
     public void conn() {
         //加载驱动
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            ct = DriverManager.getConnection("jdbc:sqlserver://localhost:1433; DatabaseName=yhy", "sa", "yhy");
+            Class.forName("");
+            ct = DriverManager.getConnection("jdbc:mysql://localhost:3306/werewolves", "root", "");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

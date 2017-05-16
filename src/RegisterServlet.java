@@ -36,7 +36,7 @@ public class RegisterServlet extends HttpServlet {
                 dispatcher.include(req, resp);
             } else {
                 ubc.writeToDb(u);
-                RequestDispatcher dispatcher = req.getRequestDispatcher("registerSuccess.html");
+                RequestDispatcher dispatcher = req.getRequestDispatcher("index.html");
                 dispatcher.include(req, resp);
             }
         } finally {

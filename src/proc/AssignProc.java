@@ -1,5 +1,7 @@
 package proc;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import log.LogSetting;
 
 import javax.servlet.http.HttpSession;
@@ -36,7 +38,26 @@ public class AssignProc extends Proc{
         appendAttribute(map3);
         for (Session s : GameProc.map1.keySet()) {
             String role = (String) GameProc.map1.get(s).getAttribute("role");
-            String msg="{ \" role \" : "+ role + " }";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("state", "start");
+            jsonObject.put("identify", role);
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(1);
+            jsonArray.add(2);
+            jsonArray.add(3);
+            jsonArray.add(4);
+            jsonArray.add(5);
+            jsonArray.add(6);
+            jsonArray.add(7);
+            jsonArray.add(8);
+            jsonArray.add(9);
+            jsonArray.add(10);
+            jsonArray.add(11);
+            jsonArray.add(12);
+            jsonObject.put("searArr", jsonArray);
+            jsonObject.put("mySeat", GameProc.map1.get(s).getAttribute("num"));
+            String msg = jsonObject.toJSONString();
+            System.out.println(msg);
             try {
                 s.getBasicRemote().sendText(msg);
             } catch (IOException e) {
