@@ -4,9 +4,9 @@
  */
 // 4,4,4的局，身份：身份标示图
 var identifyArray = {
-    "0": ["狼人"],
-    "1": ["预言家"],
-    "2": ["女巫"],
+    "0": ["狼人", wolfOperate],//wolfOperate
+    "1": ["预言家", prophetOperate],//prophetOperate
+    "2": ["女巫", witchOperate],// witchOperate
     "3": ["守卫"],
     "4": ["猎人"],
     "5": ["平民"],
@@ -16,9 +16,22 @@ var death = false; // 用户存活信息
 // 点击开始按钮，即进入开始游戏准备
 $("#js-start").on("click", function (e) {
     $("#js-start").hide(); // 隐藏按钮
-    $("#js-prepareGame").show(); // 跳转到等待页面
+    // $("#js-prepareGame").show(); // 跳转到等待页面
 
-    startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
+
+    myIdentify = 2; // 每位玩家的身份
+
+    $("#js-prepareGame").hide(); // 跳转到等待页面
+    $("#js-containAll").show();// 显示container
+    timeOut(new Date()); // 开始计时
+
+    showMyIdentify(myIdentify);//显示当前用户信息
+    showSeats([1,6,0,12,11,7,4,3,2,5,10,8], 1); // 显示座位信息
+    // 游戏倒计时，由myIdentify保存当前用户身份
+    showMessage(myIdentify);
+
+
+    // startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
 });
 
 /**
@@ -29,10 +42,7 @@ $("#js-start").on("click", function (e) {
  */
 function startGame(url) {
     var webSockets = new WebSocket(url);
-    $(webSockets).on("open", function () {
-        console.log("发送数据中");
-    })
-    .on("message", function (msg) {
+    $(webSockets).on("message", function (msg) {
         var data = JSON.parse(msg.data);
         var state = data.state; // 游戏人数是否凑齐===start
         if(state === "start"){
@@ -50,12 +60,6 @@ function startGame(url) {
             showMessage(myIdentify);
         }
     })
-    .on("close", function (e) {
-        console.log("关闭连接" + e);
-    })
-    .on("error", function (e) {
-        console.log("发送错误" + e);
-    });
 }
 /**
  *显示个人用户信息
@@ -64,7 +68,7 @@ function startGame(url) {
 function showMyIdentify(identify) {
     var imgUrl = "../img/card/identify"+identify+".jpg"; // 显示身份信息的图片
     $("#js-userIdentify").attr("style", "background: url('"+imgUrl+"');background-size: cover;");
-    $("#js-userIdentify").html(identifyArray[identify]);// 图片上显示身份
+    $("#js-userIdentify").html(identifyArray[identify][0]);// 图片上显示身份
 }
 /**
  * 用户座位列表展示,在当前用户的头像加上红色边框
@@ -74,15 +78,16 @@ function showSeats(seatArr, mySeat) {
         var centerIndex = seatArr.length/2;
         var left = $('#js-leftLogo');
         var right = $('#js-rightLogo');
-        var img = '<img src="../img/seats/'+i+'.jpg" alt="用户' + i + '">';
+        var img = '<div class="userLogo">'+(i+1)+'</div>';
         if(i === mySeat){
-            img = '<img src="../img/seats/'+i+'.jpg" class="mySeatImg" alt="我">';
+            img = '<div class="userLogo mySeatImg">'+(i+1)+'</div>';
         }
         if(i < centerIndex){
             left.append(img);
         } else {
             right.append(img);
         }
+        $(".userLogo:last-child").attr("style", "background-image:url('../img/seats/"+i+".jpg');background-size: cover;");
     }
 }
 /**
@@ -103,33 +108,89 @@ function timeOut(nowTime) {
  */
 function showMessage(identify) {
     var $dom = $("#js-message"); // 提示信息展示处
-    var textArr = ["开始,天黑请闭眼", "狼人请睁眼", "预言家请睁眼", "女巫请睁眼", "守卫请睁眼", "猎人请睁眼"];
+    var textArr = ["开始,天黑请闭眼", "狼人请睁眼", "预言家请睁眼", "女巫请睁眼", "守卫请睁眼", "天亮了，请睁眼"];
     var ide = identify+1;
     $dom.show();
-    // 每个操作相隔5s
+    // 夜间操作
     for(var i=0; i<textArr.length; i++){
         setTimeout((function (i) {
             return function () {
-                if(i === ide && identify !== 5){
-                    /**
-                     * todo 身份牌的操作
-                     */
+                if(i === ide+1 && identify <= 2){
+                    //天黑狼人，预言家，女巫操作
+                    $dom.hide();
+                    identifyArray[myIdentify][1]();
                 } else {
                     $dom.html(textArr[i]);
                 }
             }
         })(i), 5000*i);
     }
+    //白天操作
+
 }
 /**
  * 显示狼队友
  */
 function wolf(wolfIndex) {
     for(var j=0; j<wolfIndex.length; j++){
-        if(wolfIndex[j] < 6){
-            $('#js-leftLogo>img:eq('+j+')').attr("src", "../img/card/identify0.jpg");
-        } else {
-            $('#js-rightLogo>img:eq('+(j-6)+')').attr("src", "../img/card/identify0.jpg");
-        }
+        $('.userLogo:eq('+j+')').attr("style", "background-image:url('../img/card/identify0.jpg');background-size: cover;");
     }
 }
+/**
+ * 狼队友操作
+ */
+function wolfOperate(){
+    $(".container:eq(0)").one("click", function (e) {
+        var index = $(".userLogo").index($(e.target));
+        if(e.target.className.search("death") === -1 && confirm("确定要杀"+(index+1)+"号吗？")){
+            var socket = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/kill/"+index);
+            $(socket).on("message", function (msg) {
+                alert("你们今晚杀的是"+msg.data+"号");
+                $("#js-message").show();
+            });
+        }
+    });
+}
+/**
+ * 预言家操作
+ */
+function prophetOperate(){
+    $(".container:eq(0)").one("click", function (e) {
+        var index = $(".userLogo").index($(e.target));
+        if(e.target.className.search("death") === -1 && confirm("确认要验证"+(index+1)+"号的身份？")){
+            var socket = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/prophet/"+index);
+            $(socket).on("message", function (msg) {
+                alert("你验的是"+index+"号，他的身份是"+msg.data.index);
+                $("#js-message").show();
+            });
+        }
+    });
+}
+/**
+ *女巫操作
+ */
+function witchOperate(){
+    var socket = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/witch");// 请求杀人信息
+    $(socket).on("message", function (msg) {
+        var help = confirm("今天晚上死亡的是"+msg.data+"号，是否要使用解药？")?"1":"0";
+        new WebSocket("ws://127.0.0.1:8080/werewolves/portal/help/"+help);
+        var poison = confirm("请问是否使用毒药")?"1":"0";
+        if(poison){
+            $(".container:eq(0)").one("click", function (e) {
+                var index = $(".userLogo").index($(e.target));
+                if(e.target.className.search("death") === -1 && confirm("确认要毒"+(index+1)+"号吗？")){
+                    var socket = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/poison/"+index);
+                    $(socket).on("message", function (msg) {
+                        alert("您对"+index+"号，使用了毒药");
+                        $("#js-message").show();
+                    });
+                }
+            });
+        } else {
+            return;
+        }
+    });
+}
+/**
+ * 投票
+ */

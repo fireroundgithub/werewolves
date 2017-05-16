@@ -53,11 +53,15 @@
     height: 500px;
 }
 /*左右两边用户头像*/
-.rightLogo img, .leftLogo img{
+.userLogo{
     width: 40px;
+    line-height: 40px;
     height: 40px;
     border-radius: 50%;
     padding: 3px;
+    font-size: 28px;
+    font-weight: bolder;
+    text-align: center;
 }
 .leftLogo{
     float: left;
@@ -177,4 +181,8 @@ button{
     width: 300px;
     margin-left: -150px;
     margin-top: -0.75em;
+}
+.death{
+    color: #f00;
+    font-size: 50px;
 }
