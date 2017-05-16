@@ -7,7 +7,7 @@ var identifyArray = {
     "0": ["狼人", wolfOperate],//wolfOperate
     "1": ["预言家", prophetOperate],//prophetOperate
     "2": ["女巫", witchOperate],// witchOperate
-    "3": ["守卫"],
+    "3": ["守卫", guardOperate],
     "4": ["猎人"],
     "5": ["平民"],
 };
@@ -16,22 +16,9 @@ var death = false; // 用户存活信息
 // 点击开始按钮，即进入开始游戏准备
 $("#js-start").on("click", function (e) {
     $("#js-start").hide(); // 隐藏按钮
-    // $("#js-prepareGame").show(); // 跳转到等待页面
+    $("#js-prepareGame").show(); // 跳转到等待页面
 
-
-    myIdentify = 2; // 每位玩家的身份
-
-    $("#js-prepareGame").hide(); // 跳转到等待页面
-    $("#js-containAll").show();// 显示container
-    timeOut(new Date()); // 开始计时
-
-    showMyIdentify(myIdentify);//显示当前用户信息
-    showSeats([1,6,0,12,11,7,4,3,2,5,10,8], 1); // 显示座位信息
-    // 游戏倒计时，由myIdentify保存当前用户身份
-    showMessage(myIdentify);
-
-
-    // startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
+    startGame("ws://localhost:8080/werewolves/ws-server/ready/0");
 });
 
 /**
@@ -125,7 +112,9 @@ function showMessage(identify) {
             }
         })(i), 5000*i);
     }
-    //白天操作
+    /**
+     * todo 白天操作，获得死亡信息
+     */
 
 }
 /**
@@ -192,5 +181,27 @@ function witchOperate(){
     });
 }
 /**
+ *守卫操作
+ */
+function guardOperate(){
+    $(".container:eq(0)").one("click", function (e) {
+        var index = $(".userLogo").index($(e.target));
+        if(e.target.className.search("death") === -1 && confirm("确认要守"+(index+1)+"号吗？")){
+            var socket = new WebSocket("ws://127.0.0.1:8080/werewolves/portal/guard/"+index);
+            $(socket).on("message", function (msg) {
+                if(msg.data){
+                    alert("您守卫了"+index+"号");
+                    $("#js-message").show();
+                } else {
+                    alert("对不起，不要同一晚上守护同一个人");
+                }
+            });
+        }
+    });
+}
+/**
  * 投票
  */
+function vote() {
+    
+}
